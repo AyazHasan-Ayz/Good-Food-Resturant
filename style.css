@@ -13,7 +13,10 @@
     --border-rad: 16px;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+img {
+    max-width: 100%;
+    height: auto;
+}
 html { scroll-behavior: smooth; font-family: 'Poppins', sans-serif; color: var(--text-dark); font-size: 16px; } 
 body { background-color: var(--bg-light); line-height: 1.7; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 main { flex: 1; }
