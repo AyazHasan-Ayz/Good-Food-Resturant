@@ -12,7 +12,7 @@ window.addEventListener('load', () => {
 const menuDishes = [
     { id: 1, name: "Butter Chicken", price: 299, desc: "Creamy and flavorful chicken cooked in a rich tomato butter gravy.", category: "Main Course", img: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=80", special: "Bestseller" },
     { id: 2, name: "Chicken Biryani", price: 249, desc: "Fragrant basmati rice cooked with tender chicken and aromatic spices.", category: "Rice", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&q=80", special: "Chef's Special" },
-    { id: 3, name: "Paneer Butter Masala", price: 229, desc: "Soft paneer cubes cooked in a creamy tomato-based gravy.", category: "Main Course", img: "images/paneer-butter-masal.png", special: "Bestseller" },
+    { id: 3, name: "Paneer Butter Masala", price: 229, desc: "Soft paneer cubes cooked in a creamy tomato-based gravy.", category: "Main Course", img: "images/paneer-butter-masala.png", special: "Bestseller" },
     { id: 4, name: "Veg Biryani", price: 199, desc: "Aromatic basmati rice cooked with fresh vegetables and spices.", category: "Rice", img: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=500&q=80", special: "" },
     { id: 5, name: "Chicken Tikka", price: 269, desc: "Juicy chicken pieces marinated with spices and grilled to perfection.", category: "Starters", img: "images/chicken-tikka.png", special: "Chef's Special" },
     { id: 6, name: "Paneer Tikka", price: 239, desc: "Grilled cottage cheese with colorful vegetables and Indian spices.", category: "Starters", img: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&q=80", special: "" },
