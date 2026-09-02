@@ -102,7 +102,8 @@ function closeDiceModal(e) {
 }
 
 function resetSlot() {
-    document.getElementById('slot-img').src = "images/logo.png";
+    // Yahan logo.png ko Logo.png karo
+    document.getElementById('slot-img').src = "images/Logo.png";
     document.getElementById('slot-img').style.opacity = 1;
     document.getElementById('slot-name').innerText = "Ready to Roll?";
     document.getElementById('slot-price').innerText = "Tap the button below!";
