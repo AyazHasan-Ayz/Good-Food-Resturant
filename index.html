@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Food Restaurant | Premium Dining Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="images/logo.png" alt="Good Food Logo" class="splash-logo">
+            <div class="splash-loader"></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo" onclick="navigateTo('home-view'); window.scrollTo(0,0);">
+            <img src="images/logo.png" alt="Logo" class="nav-brand-logo"> Good Food
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active" onclick="navigateTo('home-view'); window.scrollTo(0,0);">Home</a>
+            <a href="#" onclick="navigateTo('home-view'); setTimeout(() => document.getElementById('specials-section').scrollIntoView({behavior: 'smooth'}), 100);">Specials</a>
+            <a href="#" onclick="navigateTo('home-view'); setTimeout(() => document.getElementById('menu-section').scrollIntoView({behavior: 'smooth'}), 100);">Menu</a>
+            <a href="#" onclick="navigateTo('home-view'); setTimeout(() => document.getElementById('why-us').scrollIntoView({behavior: 'smooth'}), 100);">Why Choose Us</a>
+            <a href="#" onclick="document.getElementById('footer').scrollIntoView({behavior: 'smooth'});">Contact</a>
+        </div>
+        <div class="nav-actions">
+            <div class="cart-icon" onclick="toggleCart()">
+                🛒 <span id="cart-count">0</span>
+            </div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Culinary Cart</h2>
+            <button class="close-cart" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-footer">
+            <div class="cart-totals">
+                <div class="flex-bw"><p>Subtotal</p><p id="cart-subtotal">₹0</p></div>
+                <div class="flex-bw"><p>Delivery Fee</p><p>₹40</p></div>
+                <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.06); margin: 10px 0;">
+                <div class="flex-bw"><h3>Total</h3><h3 class="text-primary" id="cart-total">₹0</h3></div>
+            </div>
+            <button class="btn btn-primary checkout-btn w-100" onclick="goToCheckout()">Proceed to Checkout</button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+
+    <div class="dice-modal-overlay" id="dice-modal" onclick="closeDiceModal(event)">
+        <div class="dice-modal-content" onclick="event.stopPropagation()">
+            <button class="close-dice" onclick="closeDiceModal()">×</button>
+            
+            <div class="dice-modal-header">
+                <h2>Feeling Lucky? 🎲</h2>
+                <p>Can't decide? Let our Casino Machine pick a delicious meal for you!</p>
+            </div>
+
+            <div class="slot-machine">
+                <div class="slot-window" id="slot-window">
+                    <img id="slot-img" src="images/logo.png" alt="Roll to pick">
+                    <div class="slot-info">
+                        <h3 id="slot-name">Ready to Roll?</h3>
+                        <p id="slot-price" class="text-primary fw-600"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dice-actions">
+                <button id="spin-btn" class="btn btn-primary pulse-effect" onclick="startSpin()">Roll the Dice 🎲</button>
+                <button id="add-won-btn" class="btn btn-secondary hidden" onclick="addWonDish()">Add to Cart 🛒</button>
+            </div>
+        </div>
+    </div>
+
+    <main id="main-content">
+
+        <div id="home-view" class="page-view active">
+            <header class="hero">
+                <div class="hero-content">
+                    <span class="hero-badge">✨ Welcome to Good Food</span>
+                    <h1>Good Food, <br><span>Great Moments.</span></h1>
+                    <p>Freshly prepared dishes, exquisite artisanal flavors, and a fine dining experience you'll truly fall in love with.</p>
+                    <div class="hero-buttons">
+                        <button onclick="document.getElementById('specials-section').scrollIntoView({behavior: 'smooth'})" class="btn btn-primary">Order Now</button>
+                        <button onclick="document.getElementById('menu-section').scrollIntoView({behavior: 'smooth'})" class="btn btn-secondary">Explore Menu</button>
+                    </div>
+                </div>
+                <div class="hero-image-wrapper">
+                    <div class="hero-glow"></div>
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Delicious Food" class="floating-img">
+                </div>
+            </header>
+
+            <section id="specials-section" class="specials-section section-reveal">
+                <div class="section-title">
+                    <span class="sub-heading">Master Chef Creations</span>
+                    <h2>Bestsellers & Chef's Specials</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="specials-grid" id="specials-grid">
+                    </div>
+            </section>
+
+            <section id="menu-section" class="menu-section section-reveal">
+                <div class="section-title">
+                    <span class="sub-heading">Handcrafted Perfection</span>
+                    <h2>Our Full Menu</h2>
+                    <div class="divider"></div>
+                </div>
+                
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterMenu('All')">All Dishes</button>
+                    <button class="filter-btn" onclick="filterMenu('Starters')">Starters</button>
+                    <button class="filter-btn" onclick="filterMenu('Main Course')">Main Course</button>
+                    <button class="filter-btn" onclick="filterMenu('Rice')">Rice</button>
+                    <button class="filter-btn" onclick="filterMenu('Breads')">Breads</button>
+                    <button class="filter-btn" onclick="filterMenu('Desserts')">Desserts</button>
+                </div>
+
+                <div class="menu-grid" id="menu-grid">
+                    </div>
+            </section>
+
+            <section id="why-us" class="why-us section-reveal">
+                <div class="section-title">
+                    <span class="sub-heading">The Good Food Standard</span>
+                    <h2>Why Choose Us?</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="icon-box">🥬</div>
+                        <h3>Fresh Ingredients</h3>
+                        <p>Only fresh, locally sourced and carefully handpicked ingredients.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon-box">👨‍🍳</div>
+                        <h3>Delicious Recipes</h3>
+                        <p>Authentic, secret blend flavors prepared by master chefs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon-box">⚡</div>
+                        <h3>Fast Service</h3>
+                        <p>Blazing hot and fresh food served without any delay.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon-box">⭐</div>
+                        <h3>Quality You Trust</h3>
+                        <p>Uncompromising commitment to taste, hygiene, and satisfaction.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="checkout-view" class="page-view bg-light">
+            <div class="checkout-container section-reveal">
+                <div class="checkout-form-container">
+                    <h2>Secure Checkout</h2>
+                    <p class="section-desc">Please fill in your delivery parameters below.</p>
+                    <form id="checkout-form" onsubmit="processCheckout(event)">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="c-name" required placeholder="Enter your full name">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Mobile Number</label>
+                                <input type="tel" id="c-phone" pattern="[0-9]{10}" required placeholder="10-digit mobile">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="c-email" required placeholder="name@domain.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Delivery Address</label>
+                            <textarea id="c-address" rows="3" required placeholder="House/Flat no., Street, Landmark"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" id="c-city" required value="Kanpur" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Pincode</label>
+                                <input type="text" id="c-pin" pattern="[0-9]{6}" required placeholder="6-digit pincode">
+                            </div>
+                        </div>
+
+                        <label class="input-label-title">Delivery Options</label>
+                        <div class="radio-group">
+                            <label class="radio-card"><input type="radio" name="delivery" value="Home Delivery" checked> <span>Home Delivery</span></label>
+                            <label class="radio-card"><input type="radio" name="delivery" value="Pickup"> <span>Restaurant Pickup</span></label>
+                        </div>
+
+                        <label class="input-label-title">Payment Method</label>
+                        <div class="radio-group">
+                            <label class="radio-card"><input type="radio" name="payment" value="Cash on Delivery" checked> <span>Cash on Delivery</span></label>
+                            <label class="radio-card"><input type="radio" name="payment" value="UPI"> <span>UPI Transfer</span></label>
+                            <label class="radio-card"><input type="radio" name="payment" value="Card"> <span>Credit/Debit Card</span></label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-2">Place Order Now</button>
+                    </form>
+                </div>
+                
+                <div class="checkout-summary">
+                    <h2>Order Summary</h2>
+                    <div id="checkout-items" class="chk-item-scroll"></div>
+                    <div class="summary-totals">
+                        <div class="flex-bw"><p>Subtotal</p><p id="chk-subtotal">₹0</p></div>
+                        <div class="flex-bw"><p>Delivery Fee</p><p>₹40</p></div>
+                        <hr>
+                        <div class="flex-bw"><h3>Grand Total</h3><h3 id="chk-total" class="text-primary">₹0</h3></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="success-view" class="page-view bg-light">
+            <div class="success-page">
+                <div class="success-container section-reveal">
+                    <div class="success-icon-wrapper">
+                        <div class="success-icon">
+                            <svg viewBox="0 0 24 24"><path fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>
+                        </div>
+                    </div>
+                    <h1>Order Confirmed!</h1>
+                    <p class="subtitle">Thank you! Your order has been successfully placed and sent to our kitchen.</p>
+                    
+                    <div class="order-details-card">
+                        <div class="flex-bw"><span>Order Number:</span> <strong id="s-id"></strong></div>
+                        <div class="flex-bw"><span>Customer Name:</span> <strong id="s-name"></strong></div>
+                        <div class="flex-bw"><span>Total Amount:</span> <strong id="s-total" class="text-primary"></strong></div>
+                        <div class="est-time">
+                            ⏱ Estimated Delivery: <strong>30–45 minutes</strong>
+                        </div>
+                    </div>
+
+                    <div class="success-actions">
+                        <button class="btn btn-secondary" onclick="alert('Live tracking link sent via SMS!')">Track Order</button>
+                        <button onclick="navigateTo('home-view'); window.scrollTo(0,0);" class="btn btn-primary">Back to Home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer id="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo-row">
+                    <img src="images/logo.png" alt="Logo" class="footer-brand-logo">
+                    <h3>Good Food Restaurant</h3>
+                </div>
+                <p>"Delicious Food. Made Fresh. Served With Love."</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Navigation</h4>
+                <a href="#" onclick="navigateTo('home-view'); window.scrollTo(0,0);">Home Page</a>
+                <a href="#" onclick="navigateTo('home-view'); setTimeout(() => document.getElementById('specials-section').scrollIntoView({behavior: 'smooth'}), 100);">Chef's Specials</a>
+                <a href="#" onclick="navigateTo('home-view'); setTimeout(() => document.getElementById('menu-section').scrollIntoView({behavior: 'smooth'}), 100);">Full Menu</a>
+            </div>
+            <div class="footer-contact">
+                <h4>Get in Touch</h4>
+                <p>📞 +91 98765 43210</p>
+                <p>✉️ hello@goodfoodrestaurant.com</p>
+                <p>📍 Kanpur, Uttar Pradesh, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="socials">
+                <span>Instagram</span> • <span>Facebook</span> • <span>WhatsApp</span>
+            </div>
+            <p>&copy; 2026 Good Food Restaurant. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/919876543210" target="_blank" class="floating-wa" title="Chat on WhatsApp">💬</a>
+    <div class="floating-dice" onclick="openDiceModal()" title="Roll the dice for a random dish!">🎲</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
