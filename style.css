@@ -14,7 +14,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; font-family: 'Poppins', sans-serif; color: var(--text-dark); }
+html { scroll-behavior: smooth; font-family: 'Poppins', sans-serif; color: var(--text-dark); font-size: 16px; } /* Base font size */
 body { background-color: var(--bg-light); line-height: 1.7; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 main { flex: 1; }
 h1, h2, h3 { font-family: 'Playfair Display', serif; }
@@ -132,49 +132,21 @@ a { text-decoration: none; color: inherit; }
 .special-content p { color: var(--text-muted); font-size: 0.9rem; flex-grow: 1; margin-bottom: 1.2rem; line-height: 1.5; }
 .special-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 1rem; }
 
-/* =========================================
-   UPDATED: Menu Filters (Single Box Scroll)
-   ========================================= */
+/* Menu Section */
 .menu-section { padding: 6rem 5%; background: var(--bg-light); }
-
 .filters {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    background: var(--white);
-    padding: 8px;
-    border-radius: 50px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid rgba(0,0,0,0.04);
-    gap: 5px;
-    margin: 0 auto 3.5rem auto;
-    overflow-x: auto;
-    width: max-content;
-    max-width: 100%;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
+    display: flex; flex-wrap: nowrap; justify-content: flex-start; align-items: center;
+    background: var(--white); padding: 8px; border-radius: 50px; box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0,0,0,0.04); gap: 5px; margin: 0 auto 3.5rem auto;
+    overflow-x: auto; width: max-content; max-width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none; 
 }
-.filters::-webkit-scrollbar { display: none; } /* Chrome/Safari */
-
+.filters::-webkit-scrollbar { display: none; } 
 .filter-btn {
-    white-space: nowrap;
-    padding: 10px 24px;
-    border: none;
-    background: transparent;
-    border-radius: 40px;
-    cursor: pointer;
-    transition: var(--transition);
-    font-weight: 500;
-    font-size: 0.95rem;
-    color: var(--text-muted);
+    white-space: nowrap; padding: 10px 24px; border: none; background: transparent;
+    border-radius: 40px; cursor: pointer; transition: var(--transition); font-weight: 500;
+    font-size: 0.95rem; color: var(--text-muted);
 }
-.filter-btn.active, .filter-btn:hover {
-    background: var(--primary);
-    color: white;
-    box-shadow: 0 4px 12px rgba(217,119,6,0.3);
-}
-/* ========================================= */
+.filter-btn.active, .filter-btn:hover { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(217,119,6,0.3); }
 
 .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2rem; }
 .menu-card {
@@ -291,7 +263,7 @@ footer { background: #111827; color: #9ca3af; padding: 5rem 5% 2rem; margin-top:
 .floating-dice:hover { transform: scale(1.1) rotate(20deg); background: var(--primary-hover); animation: none; }
 @keyframes floatDice { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-/* Casino Dice Modal (Slot Machine) */
+/* Casino Dice Modal */
 .dice-modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
@@ -317,7 +289,6 @@ footer { background: #111827; color: #9ca3af; padding: 5rem 5% 2rem; margin-top:
 .dice-modal-header h2 { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
 .dice-modal-header p { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
 
-/* The Slot Machine Screen */
 .slot-machine {
     background: #111; padding: 12px; border-radius: 20px;
     box-shadow: inset 0 10px 20px rgba(0,0,0,0.5), 0 10px 20px rgba(217,119,6,0.2);
@@ -339,54 +310,84 @@ footer { background: #111827; color: #9ca3af; padding: 5rem 5% 2rem; margin-top:
 .section-reveal { opacity: 0; transform: translateY(35px); transition: 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
 .section-reveal.visible { opacity: 1; transform: translateY(0); }
 
+
 /* =========================================
-   MOBILE RESPONSIVENESS ADJUSTMENTS
+   MOBILE RESPONSIVENESS (AGGRESSIVE SCALING)
    ========================================= */
+
 @media (max-width: 992px) {
     .menu-grid, .specials-grid { grid-template-columns: repeat(2, 1fr); }
     .hero { flex-direction: column-reverse; text-align: center; padding-top: 3rem; }
     .hero-content { max-width: 100%; margin-top: 2.5rem; }
     .hero-buttons { justify-content: center; }
     .checkout-container { flex-direction: column; }
-    .hero h1 { font-size: 3.2rem; }
 }
 
 @media (max-width: 768px) {
-    .menu-grid, .specials-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-    .specials-section, .menu-section, .why-us { padding: 3rem 5%; }
-    .hero h1 { font-size: 2.4rem; }
-    .section-title h2 { font-size: 2.2rem; }
+    /* Scale down base font-size so EVERYTHING shrinks proportionally */
+    html { font-size: 14px; } 
+
+    .menu-grid, .specials-grid { grid-template-columns: 1fr; gap: 1.2rem; }
     
+    /* Shrink huge desktop paddings */
+    .hero { min-height: auto; padding: 2rem 5% 3rem; }
+    .specials-section, .menu-section, .why-us, footer { padding: 2.5rem 5%; }
+    
+    /* Typography scaling */
+    .hero h1 { font-size: 2.6rem; margin-bottom: 0.8rem; }
+    .hero p { font-size: 1rem; margin-bottom: 1.5rem; max-width: 100%; }
+    .section-title { margin-bottom: 2rem; }
+    .section-title h2 { font-size: 2rem; }
+    
+    /* Compact Menu Filter Slider */
+    .filters { padding: 6px; margin-bottom: 2rem; gap: 4px; }
+    .filter-btn { padding: 8px 18px; font-size: 0.9rem; }
+
+    /* Compact Cards */
+    .menu-card, .special-card { border-radius: 12px; }
+    .menu-img-wrapper, .special-img-wrapper { height: 180px; }
+    .menu-content, .special-content { padding: 1.2rem; }
+    .menu-content h3, .special-content h3 { font-size: 1.2rem; }
+    .menu-content p, .special-content p { font-size: 0.9rem; margin-bottom: 1rem; }
+    .add-btn { padding: 8px 16px; font-size: 0.85rem; }
+
+    /* Hamburger Nav */
     .hamburger { display: flex; }
     .nav-links {
         position: absolute; top: 100%; left: 0; width: 100%; background: var(--white);
-        flex-direction: column; padding: 1.5rem 0; box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        flex-direction: column; padding: 1rem 0; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         display: none; border-bottom: 1px solid #f3f4f6; z-index: 101;
     }
     .nav-links.active { display: flex; animation: fadeInView 0.3s forwards; }
-    .nav-links a { margin: 12px 25px; display: block; text-align: center; }
+    .nav-links a { margin: 10px 20px; display: block; text-align: center; }
 
-    /* Casino Modal Mobile Adjustments */
-    .dice-modal-content { padding: 1.5rem; width: 95%; border-width: 2px; }
-    .slot-window { height: 260px; }
-    .slot-window img { height: 160px; }
-    .dice-modal-header h2 { font-size: 1.6rem; }
+    /* Casino Modal Mobile Shrink */
+    .dice-modal-content { padding: 1.5rem; width: 92%; border-width: 3px; border-radius: 20px; }
+    .slot-machine { padding: 8px; margin-bottom: 1rem; }
+    .slot-window { height: 220px; }
+    .slot-window img { height: 140px; }
+    .dice-modal-header h2 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+    .dice-modal-header p { font-size: 0.9rem; margin-bottom: 1rem;}
     .slot-info h3 { font-size: 1.1rem; }
-    .dice-actions button { max-width: 100%; }
+    .slot-info p { font-size: 1rem; }
     
     /* Un-stick Checkout Summary on Mobile */
-    .checkout-summary { position: relative; top: 0; }
-    .checkout-container { padding: 2rem 5%; }
+    .checkout-summary { position: relative; top: 0; padding: 1.5rem; margin-top: 1.5rem; }
+    .checkout-container { padding: 2rem 5%; gap: 0; }
+    .checkout-form-container { padding: 1.5rem; }
 }
 
 @media (max-width: 480px) {
-    .hero-buttons { flex-direction: column; }
+    /* Super small phones */
+    html { font-size: 13px; }
+    .hero-buttons { flex-direction: column; width: 100%; }
+    .hero-buttons button { width: 100%; }
     .cart-sidebar { width: 100%; right: -100%; }
     .form-row { flex-direction: column; gap: 0; }
-    .dice-actions { flex-direction: column; }
-    .dice-actions button { width: 100%; }
+    .dice-actions { flex-direction: column; gap: 10px; }
+    .dice-actions button { width: 100%; max-width: 100%; }
     
     /* Smaller Floating Buttons for small screens */
-    .floating-wa { width: 45px; height: 45px; font-size: 1.5rem; bottom: 85px; right: 15px;}
-    .floating-dice { width: 50px; height: 50px; font-size: 1.6rem; bottom: 20px; right: 15px;}
+    .floating-wa { width: 45px; height: 45px; font-size: 1.4rem; bottom: 80px; right: 15px;}
+    .floating-dice { width: 50px; height: 50px; font-size: 1.5rem; bottom: 20px; right: 15px;}
 }
