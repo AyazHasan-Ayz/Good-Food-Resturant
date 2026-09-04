@@ -58,11 +58,11 @@ a { text-decoration: none; color: inherit; }
 }
 
 .splash-logo { 
-    width: 85%; /* Makes it nicely large on mobile */
-    max-width: 450px; /* Keeps it from getting too huge on laptops */
+    width: 85%; 
+    max-width: 450px; 
     height: auto; 
     object-fit: contain; 
-    /* Removed the box-shadow and border-radius so it blends perfectly flat */
+    mix-blend-mode: multiply; /* Yeh line image ke background box ko gayab kar degi */
     animation: smoothFadeIn 1.2s ease-out forwards; 
 }
 
