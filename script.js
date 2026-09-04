@@ -1,3 +1,16 @@
+// Custom Toast Notification
+function showToast(message) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `✅ ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // Splash Screen
 window.addEventListener('load', () => {
     setTimeout(() => {
@@ -32,6 +45,8 @@ const DELIVERY_FEE = 40;
 function navigateTo(viewId) {
     document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
     document.getElementById(viewId).classList.add('active');
+    
+    // Desktop Nav
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.classList.remove('active');
         if(link.getAttribute('onclick') && link.getAttribute('onclick').includes(viewId)) {
@@ -39,6 +54,15 @@ function navigateTo(viewId) {
             link.classList.add('active');
         }
     });
+    
+    // Bottom Nav
+    document.querySelectorAll('.bottom-nav-item').forEach(link => {
+        link.classList.remove('active');
+        if(link.getAttribute('onclick') && link.getAttribute('onclick').includes(viewId)) {
+            link.classList.add('active');
+        }
+    });
+
     document.querySelector('.nav-links').classList.remove('active');
     if(viewId === 'checkout-view') renderCheckout();
     setTimeout(() => window.dispatchEvent(new Event('scroll')), 50);
@@ -47,7 +71,7 @@ function navigateTo(viewId) {
 function toggleMenu() { document.querySelector('.nav-links').classList.toggle('active'); }
 function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('open'); document.getElementById('cart-overlay').classList.toggle('show'); }
 function goToCheckout() {
-    if(cart.length === 0) return alert("Your cart is empty. Please add items to order.");
+    if(cart.length === 0) return showToast("Your cart is empty. Please add items to order.");
     toggleCart(); navigateTo('checkout-view'); window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -95,93 +119,141 @@ function addWonDish() {
     if(wonDishId) { addToCart(wonDishId); document.getElementById('dice-modal').classList.remove('show'); toggleCart(); }
 }
 
-// Menu & Cart Rendering
+// Menu & Cart Rendering with Skeletons
 function renderSpecials() {
     const grid = document.getElementById('specials-grid'); if(!grid) return;
-    grid.innerHTML = menuDishes.filter(d => d.special !== "").map((dish, index) => {
-        const qty = cart.find(c => c.id === dish.id)?.qty || 0;
-        let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
-        return `
-        <div class="new-menu-card" style="animation-delay: ${index * 0.04}s">
-            <div class="card-img-container">
-                <img src="${dish.img}" alt="${dish.name}" loading="lazy">
-                <span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">
-                    ${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}
-                </span>
-                ${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}
-            </div>
-            <div class="card-body">
-                <div class="meta-row">
-                    <span class="pill-category">${dish.category}</span>
-                    <span class="pill-rating">4.7/5</span> 
+    
+    // Skeleton Illusion
+    grid.innerHTML = Array(3).fill(`<div class="skeleton-card"><div class="skeleton-img shimmer"></div><div class="skeleton-text shimmer"></div><div class="skeleton-text short shimmer"></div><div class="skeleton-text shimmer"></div><div class="skeleton-btn shimmer"></div></div>`).join('');
+    
+    setTimeout(() => {
+        grid.innerHTML = menuDishes.filter(d => d.special !== "").map((dish, index) => {
+            const qty = cart.find(c => c.id === dish.id)?.qty || 0;
+            let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
+            return `
+            <div class="new-menu-card" style="animation-delay: ${index * 0.04}s">
+                <div class="card-img-container">
+                    <img src="${dish.img}" alt="${dish.name}" loading="lazy">
+                    <span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">
+                        ${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}
+                    </span>
+                    ${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}
                 </div>
-                <h3>${dish.name}</h3>
-                <p class="card-stats">30 min / 328+ ratings</p>
-                <p class="card-desc">${dish.desc}</p>
-                <div class="discount-tag">10% off</div>
-                <div class="card-footer">
-                    <span class="card-price">₹${dish.price}</span>
-                    <div>${actionHTML}</div>
+                <div class="card-body">
+                    <div class="meta-row">
+                        <span class="pill-category">${dish.category}</span>
+                        <span class="pill-rating">4.7/5</span> 
+                    </div>
+                    <h3>${dish.name}</h3>
+                    <p class="card-stats">30 min / 328+ ratings</p>
+                    <p class="card-desc">${dish.desc}</p>
+                    <div class="discount-tag">10% off</div>
+                    <div class="card-footer">
+                        <span class="card-price">₹${dish.price}</span>
+                        <div>${actionHTML}</div>
+                    </div>
                 </div>
-            </div>
-        </div>`;
-    }).join('');
+            </div>`;
+        }).join('');
+    }, 500);
 }
 
 function renderMenu(category) {
     const grid = document.getElementById('menu-grid'); if(!grid) return;
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active', btn.innerText.includes(category) || (category === 'All' && btn.innerText.includes('All'))));
-    const filtered = category === 'All' ? menuDishes : menuDishes.filter(d => d.category === category);
-    grid.innerHTML = filtered.map((dish, index) => {
-        const qty = cart.find(c => c.id === dish.id)?.qty || 0;
-        let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
-        return `
-        <div class="new-menu-card" style="animation-delay: ${index * 0.04}s">
-            <div class="card-img-container">
-                <img src="${dish.img}" alt="${dish.name}" loading="lazy">
-                <span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">
-                    ${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}
-                </span>
-                ${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}
-            </div>
-            <div class="card-body">
-                <div class="meta-row">
-                    <span class="pill-category">${dish.category}</span>
-                    <span class="pill-rating">4.7/5</span> 
+    
+    // Skeleton Illusion
+    grid.innerHTML = Array(4).fill(`<div class="skeleton-card"><div class="skeleton-img shimmer"></div><div class="skeleton-text shimmer"></div><div class="skeleton-text short shimmer"></div><div class="skeleton-text shimmer"></div><div class="skeleton-btn shimmer"></div></div>`).join('');
+    
+    setTimeout(() => {
+        const filtered = category === 'All' ? menuDishes : menuDishes.filter(d => d.category === category);
+        grid.innerHTML = filtered.map((dish, index) => {
+            const qty = cart.find(c => c.id === dish.id)?.qty || 0;
+            let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
+            return `
+            <div class="new-menu-card" style="animation-delay: ${index * 0.04}s">
+                <div class="card-img-container">
+                    <img src="${dish.img}" alt="${dish.name}" loading="lazy">
+                    <span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">
+                        ${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}
+                    </span>
+                    ${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}
                 </div>
-                <h3>${dish.name}</h3>
-                <p class="card-stats">30 min / 328+ ratings</p>
-                <p class="card-desc">${dish.desc}</p>
-                <div class="discount-tag">10% off</div>
-                <div class="card-footer">
-                    <span class="card-price">₹${dish.price}</span>
-                    <div>${actionHTML}</div>
+                <div class="card-body">
+                    <div class="meta-row">
+                        <span class="pill-category">${dish.category}</span>
+                        <span class="pill-rating">4.7/5</span> 
+                    </div>
+                    <h3>${dish.name}</h3>
+                    <p class="card-stats">30 min / 328+ ratings</p>
+                    <p class="card-desc">${dish.desc}</p>
+                    <div class="discount-tag">10% off</div>
+                    <div class="card-footer">
+                        <span class="card-price">₹${dish.price}</span>
+                        <div>${actionHTML}</div>
+                    </div>
                 </div>
-            </div>
-        </div>`;
-    }).join('');
+            </div>`;
+        }).join('');
+    }, 600);
 }
 function filterMenu(cat) { renderMenu(cat); }
 
 function addToCart(id) {
     const dish = menuDishes.find(d => d.id === id); const existing = cart.find(c => c.id === id);
     if(existing) existing.qty += 1; else cart.push({ ...dish, qty: 1 });
-    saveCart(); renderSpecials(); renderMenu(document.querySelector('.filter-btn.active')?.innerText.replace(' Dishes', '') || 'All');
+    saveCart(); showToast(`${dish.name} added to cart!`);
+    
+    // Quick rerender without skeletons to avoid UI jump on add
+    const activeCat = document.querySelector('.filter-btn.active')?.innerText.split(' ')[1] || 'All';
+    renderMenuNoSkeleton(activeCat); renderSpecialsNoSkeleton();
 }
+
 function updateQty(id, delta) {
     const item = cart.find(c => c.id === id); if (!item) return;
     item.qty += delta; if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
-    saveCart(); renderSpecials(); renderMenu(document.querySelector('.filter-btn.active')?.innerText.replace(' Dishes', '') || 'All');
+    saveCart(); 
+    
+    const activeCat = document.querySelector('.filter-btn.active')?.innerText.split(' ')[1] || 'All';
+    renderMenuNoSkeleton(activeCat); renderSpecialsNoSkeleton();
     if(document.getElementById('checkout-view').classList.contains('active')) renderCheckout();
 }
+
 function removeFromCart(id) {
-    cart = cart.filter(c => c.id !== id); saveCart(); renderSpecials(); renderMenu(document.querySelector('.filter-btn.active')?.innerText.replace(' Dishes', '') || 'All');
+    cart = cart.filter(c => c.id !== id); saveCart(); 
+    const activeCat = document.querySelector('.filter-btn.active')?.innerText.split(' ')[1] || 'All';
+    renderMenuNoSkeleton(activeCat); renderSpecialsNoSkeleton();
     if(document.getElementById('checkout-view').classList.contains('active')) renderCheckout();
 }
+
+// Helpers for silent rerendering
+function renderMenuNoSkeleton(category) {
+    const grid = document.getElementById('menu-grid'); if(!grid) return;
+    const filtered = category === 'All' ? menuDishes : menuDishes.filter(d => d.category === category || d.category === category + ' Course' || d.category === category + ' Dishes');
+    grid.innerHTML = filtered.map((dish) => {
+        const qty = cart.find(c => c.id === dish.id)?.qty || 0;
+        let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
+        return `<div class="new-menu-card"><div class="card-img-container"><img src="${dish.img}"><span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}</span>${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}</div><div class="card-body"><div class="meta-row"><span class="pill-category">${dish.category}</span><span class="pill-rating">4.7/5</span></div><h3>${dish.name}</h3><p class="card-stats">30 min / 328+ ratings</p><p class="card-desc">${dish.desc}</p><div class="discount-tag">10% off</div><div class="card-footer"><span class="card-price">₹${dish.price}</span><div>${actionHTML}</div></div></div></div>`;
+    }).join('');
+}
+
+function renderSpecialsNoSkeleton() {
+    const grid = document.getElementById('specials-grid'); if(!grid) return;
+    grid.innerHTML = menuDishes.filter(d => d.special !== "").map((dish) => {
+        const qty = cart.find(c => c.id === dish.id)?.qty || 0;
+        let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
+        return `<div class="new-menu-card"><div class="card-img-container"><img src="${dish.img}"><span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}</span>${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}</div><div class="card-body"><div class="meta-row"><span class="pill-category">${dish.category}</span><span class="pill-rating">4.7/5</span></div><h3>${dish.name}</h3><p class="card-stats">30 min / 328+ ratings</p><p class="card-desc">${dish.desc}</p><div class="discount-tag">10% off</div><div class="card-footer"><span class="card-price">₹${dish.price}</span><div>${actionHTML}</div></div></div></div>`;
+    }).join('');
+}
+
+
 function saveCart() { localStorage.setItem('gfr_cart', JSON.stringify(cart)); updateCartUI(); }
 
 function updateCartUI() {
-    const cartCount = document.getElementById('cart-count'); if(cartCount) cartCount.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+    const cartCount = document.getElementById('cart-count'); if(cartCount) cartCount.innerText = totalQty;
+    const bottomCartCount = document.getElementById('bottom-cart-count'); if(bottomCartCount) bottomCartCount.innerText = totalQty;
+    
     const cartItems = document.getElementById('cart-items'); if (!cartItems) return;
     if (cart.length === 0) {
         cartItems.innerHTML = `<div class="empty-cart-msg"><p>Your culinary cart is empty</p><br><button class="btn btn-primary" onclick="toggleCart(); navigateTo('home-view'); setTimeout(() => document.getElementById('menu-section').scrollIntoView({behavior: 'smooth'}), 100);">Explore Menu</button></div>`;
@@ -211,25 +283,25 @@ function renderCheckout() {
 }
 
 function processCheckout(e) {
-    e.preventDefault(); if (cart.length === 0) return alert("Your cart is empty! Please add some dishes.");
+    e.preventDefault(); if (cart.length === 0) return showToast("Your cart is empty! Please add some dishes.");
     const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0) + DELIVERY_FEE;
     document.getElementById('s-id').innerText = 'GFR-' + Math.floor(100000 + Math.random() * 900000);
     document.getElementById('s-name').innerText = document.getElementById('c-name').value;
     document.getElementById('s-total').innerText = `₹${total}`;
-    cart = []; localStorage.removeItem('gfr_cart'); updateCartUI(); renderSpecials(); renderMenu('All');
+    cart = []; localStorage.removeItem('gfr_cart'); updateCartUI(); renderSpecialsNoSkeleton(); renderMenuNoSkeleton('All');
     navigateTo('success-view'); window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// New Form Handlers
+// New Form Handlers with Toast
 function handleReservation(e) {
     e.preventDefault();
-    alert("Thank you! Your table request has been received. We will confirm shortly via SMS/Call.");
+    showToast("Table request received! We'll confirm via SMS.");
     e.target.reset();
 }
 
 function handleNewsletter(e) {
     e.preventDefault();
-    alert("Welcome to the VIP Club! You'll now receive our secret offers and updates.");
+    showToast("Welcome to the VIP Club!");
     e.target.reset();
 }
 
