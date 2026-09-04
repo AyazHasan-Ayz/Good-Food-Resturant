@@ -98,10 +98,33 @@ function addWonDish() {
 // Menu & Cart Rendering
 function renderSpecials() {
     const grid = document.getElementById('specials-grid'); if(!grid) return;
-    grid.innerHTML = menuDishes.filter(d => d.special !== "").map(dish => {
+    grid.innerHTML = menuDishes.filter(d => d.special !== "").map((dish, index) => {
         const qty = cart.find(c => c.id === dish.id)?.qty || 0;
-        let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add to Cart</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
-        return `<div class="special-card"><span class="special-badge">${dish.special}</span><div class="special-img-wrapper"><img src="${dish.img}" alt="${dish.name}" loading="lazy"></div><div class="special-content"><h3>${dish.name}</h3><p>${dish.desc}</p><div class="special-bottom"><span class="price">₹${dish.price}</span><div>${actionHTML}</div></div></div></div>`;
+        let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
+        return `
+        <div class="new-menu-card" style="animation-delay: ${index * 0.04}s">
+            <div class="card-img-container">
+                <img src="${dish.img}" alt="${dish.name}" loading="lazy">
+                <span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">
+                    ${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}
+                </span>
+                ${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}
+            </div>
+            <div class="card-body">
+                <div class="meta-row">
+                    <span class="pill-category">${dish.category}</span>
+                    <span class="pill-rating">4.7/5</span> 
+                </div>
+                <h3>${dish.name}</h3>
+                <p class="card-stats">30 min / 328+ ratings</p>
+                <p class="card-desc">${dish.desc}</p>
+                <div class="discount-tag">10% off</div>
+                <div class="card-footer">
+                    <span class="card-price">₹${dish.price}</span>
+                    <div>${actionHTML}</div>
+                </div>
+            </div>
+        </div>`;
     }).join('');
 }
 
@@ -111,8 +134,31 @@ function renderMenu(category) {
     const filtered = category === 'All' ? menuDishes : menuDishes.filter(d => d.category === category);
     grid.innerHTML = filtered.map((dish, index) => {
         const qty = cart.find(c => c.id === dish.id)?.qty || 0;
-        let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add to Cart</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
-        return `<div class="menu-card" style="animation-delay: ${index * 0.04}s"><div class="menu-img-wrapper"><img src="${dish.img}" alt="${dish.name}" loading="lazy"></div><div class="menu-content"><h3>${dish.name}</h3><p>${dish.desc}</p><div class="menu-bottom"><span class="price">₹${dish.price}</span><div>${actionHTML}</div></div></div></div>`;
+        let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
+        return `
+        <div class="new-menu-card" style="animation-delay: ${index * 0.04}s">
+            <div class="card-img-container">
+                <img src="${dish.img}" alt="${dish.name}" loading="lazy">
+                <span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">
+                    ${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}
+                </span>
+                ${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}
+            </div>
+            <div class="card-body">
+                <div class="meta-row">
+                    <span class="pill-category">${dish.category}</span>
+                    <span class="pill-rating">4.7/5</span> 
+                </div>
+                <h3>${dish.name}</h3>
+                <p class="card-stats">30 min / 328+ ratings</p>
+                <p class="card-desc">${dish.desc}</p>
+                <div class="discount-tag">10% off</div>
+                <div class="card-footer">
+                    <span class="card-price">₹${dish.price}</span>
+                    <div>${actionHTML}</div>
+                </div>
+            </div>
+        </div>`;
     }).join('');
 }
 function filterMenu(cat) { renderMenu(cat); }
