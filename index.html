@@ -242,7 +242,29 @@
                 </div>
             </section>
         </div>
-
+<!-- ================= DISH DETAIL VIEW ================= -->
+        <div id="dish-detail-view" class="page-view bg-light">
+            <div class="dish-detail-container section-reveal">
+                <button class="back-btn" onclick="navigateTo('home-view')">← Back to Menu</button>
+                <div class="dish-detail-card">
+                    <img id="detail-img" src="" alt="Dish Image">
+                    <div class="dish-detail-info">
+                        <div class="meta-row">
+                            <span id="detail-category" class="pill-category"></span>
+                            <span class="pill-rating">4.7/5 ★</span>
+                        </div>
+                        <h2 id="detail-name"></h2>
+                        <p class="card-stats" style="margin-bottom: 15px;">30 min / 328+ ratings</p>
+                        <p id="detail-desc" class="detail-desc"></p>
+                        <div class="discount-tag">10% off</div>
+                        <div class="detail-bottom-bar">
+                            <h3 id="detail-price" class="text-primary"></h3>
+                            <div id="detail-action" onclick="event.stopPropagation()"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- ================= CHECKOUT VIEW ================= -->
         <div id="checkout-view" class="page-view bg-light">
             <div class="checkout-container section-reveal">

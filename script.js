@@ -310,3 +310,31 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSpecials(); renderMenu('All'); updateCartUI();
     setTimeout(() => window.dispatchEvent(new Event('scroll')), 100);
 });
+// Open Dish Detail Page
+function openDishDetail(id) {
+    const dish = menuDishes.find(d => d.id === id);
+    if(!dish) return;
+    
+    document.getElementById('detail-img').src = dish.img;
+    document.getElementById('detail-category').innerText = dish.category;
+    document.getElementById('detail-name').innerText = dish.name;
+    document.getElementById('detail-desc').innerText = dish.desc;
+    document.getElementById('detail-price').innerText = `₹${dish.price}`;
+    
+    updateDetailAction(dish.id);
+    navigateTo('dish-detail-view');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Update Add to Cart button inside Detail Page
+function updateDetailAction(id) {
+    const actionContainer = document.getElementById('detail-action');
+    if(!actionContainer) return;
+    const qty = cart.find(c => c.id === id)?.qty || 0;
+    
+    if(qty === 0) {
+        actionContainer.innerHTML = `<button class="add-btn" style="background:#216e41; color:white; padding:10px 24px; border-radius:8px; border:none; font-weight:600; cursor:pointer;" onclick="addToCart(${id}); updateDetailAction(${id})">Add to Cart</button>`;
+    } else {
+        actionContainer.innerHTML = `<div class="qty-controls" style="background:#216e41; color:white; padding:6px 12px; border-radius:8px; display:flex; gap:12px; align-items:center;"><button class="qty-btn" style="border:none; border-radius:50%; width:26px; height:26px; color:#216e41; font-weight:bold; cursor:pointer;" onclick="updateQty(${id}, -1); updateDetailAction(${id})">-</button><span>${qty}</span><button class="qty-btn" style="border:none; border-radius:50%; width:26px; height:26px; color:#216e41; font-weight:bold; cursor:pointer;" onclick="updateQty(${id}, 1); updateDetailAction(${id})">+</button></div>`;
+    }
+}
