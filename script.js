@@ -226,6 +226,78 @@ function removeFromCart(id) {
     if(document.getElementById('checkout-view').classList.contains('active')) renderCheckout();
 }
 
+// Menu & Cart Rendering with Skeletons
+function renderSpecials() {
+    const grid = document.getElementById('specials-grid'); if(!grid) return;
+    grid.innerHTML = Array(3).fill(`<div class="skeleton-card"><div class="skeleton-img shimmer"></div><div class="skeleton-text shimmer"></div><div class="skeleton-text short shimmer"></div><div class="skeleton-text shimmer"></div><div class="skeleton-btn shimmer"></div></div>`).join('');
+    
+    setTimeout(() => {
+        grid.innerHTML = menuDishes.filter(d => d.special !== "").map((dish, index) => {
+            const qty = cart.find(c => c.id === dish.id)?.qty || 0;
+            let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
+            return `
+            <div class="new-menu-card" style="cursor: pointer; animation-delay: ${index * 0.04}s" onclick="openDishDetail(${dish.id})">
+                <div class="card-img-container">
+                    <img src="${dish.img}" alt="${dish.name}" loading="lazy">
+                    <span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}</span>
+                    ${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}
+                </div>
+                <div class="card-body">
+                    <div class="meta-row">
+                        <span class="pill-category">${dish.category}</span>
+                        <span class="pill-rating">4.7/5</span> 
+                    </div>
+                    <h3>${dish.name}</h3>
+                    <p class="card-stats">30 min / 328+ ratings</p>
+                    <p class="card-desc">${dish.desc}</p>
+                    <div class="discount-tag">10% off</div>
+                    <div class="card-footer">
+                        <span class="card-price">₹${dish.price}</span>
+                        <div onclick="event.stopPropagation()">${actionHTML}</div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }, 500);
+}
+
+function renderMenu(category) {
+    const grid = document.getElementById('menu-grid'); if(!grid) return;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active', btn.innerText.includes(category) || (category === 'All' && btn.innerText.includes('All'))));
+    grid.innerHTML = Array(4).fill(`<div class="skeleton-card"><div class="skeleton-img shimmer"></div><div class="skeleton-text shimmer"></div><div class="skeleton-text short shimmer"></div><div class="skeleton-text shimmer"></div><div class="skeleton-btn shimmer"></div></div>`).join('');
+    
+    setTimeout(() => {
+        const filtered = category === 'All' ? menuDishes : menuDishes.filter(d => d.category === category);
+        grid.innerHTML = filtered.map((dish, index) => {
+            const qty = cart.find(c => c.id === dish.id)?.qty || 0;
+            let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
+            return `
+            <div class="new-menu-card" style="cursor: pointer; animation-delay: ${index * 0.04}s" onclick="openDishDetail(${dish.id})">
+                <div class="card-img-container">
+                    <img src="${dish.img}" alt="${dish.name}" loading="lazy">
+                    <span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}</span>
+                    ${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}
+                </div>
+                <div class="card-body">
+                    <div class="meta-row">
+                        <span class="pill-category">${dish.category}</span>
+                        <span class="pill-rating">4.7/5</span> 
+                    </div>
+                    <h3>${dish.name}</h3>
+                    <p class="card-stats">30 min / 328+ ratings</p>
+                    <p class="card-desc">${dish.desc}</p>
+                    <div class="discount-tag">10% off</div>
+                    <div class="card-footer">
+                        <span class="card-price">₹${dish.price}</span>
+                        <div onclick="event.stopPropagation()">${actionHTML}</div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }, 600);
+}
+function filterMenu(cat) { renderMenu(cat); }
+
 // Helpers for silent rerendering
 function renderMenuNoSkeleton(category) {
     const grid = document.getElementById('menu-grid'); if(!grid) return;
@@ -233,7 +305,7 @@ function renderMenuNoSkeleton(category) {
     grid.innerHTML = filtered.map((dish) => {
         const qty = cart.find(c => c.id === dish.id)?.qty || 0;
         let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
-        return `<div class="new-menu-card"><div class="card-img-container"><img src="${dish.img}"><span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}</span>${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}</div><div class="card-body"><div class="meta-row"><span class="pill-category">${dish.category}</span><span class="pill-rating">4.7/5</span></div><h3>${dish.name}</h3><p class="card-stats">30 min / 328+ ratings</p><p class="card-desc">${dish.desc}</p><div class="discount-tag">10% off</div><div class="card-footer"><span class="card-price">₹${dish.price}</span><div>${actionHTML}</div></div></div></div>`;
+        return `<div class="new-menu-card" style="cursor: pointer;" onclick="openDishDetail(${dish.id})"><div class="card-img-container"><img src="${dish.img}"><span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}</span>${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}</div><div class="card-body"><div class="meta-row"><span class="pill-category">${dish.category}</span><span class="pill-rating">4.7/5</span></div><h3>${dish.name}</h3><p class="card-stats">30 min / 328+ ratings</p><p class="card-desc">${dish.desc}</p><div class="discount-tag">10% off</div><div class="card-footer"><span class="card-price">₹${dish.price}</span><div onclick="event.stopPropagation()">${actionHTML}</div></div></div></div>`;
     }).join('');
 }
 
@@ -242,7 +314,7 @@ function renderSpecialsNoSkeleton() {
     grid.innerHTML = menuDishes.filter(d => d.special !== "").map((dish) => {
         const qty = cart.find(c => c.id === dish.id)?.qty || 0;
         let actionHTML = qty === 0 ? `<button class="add-btn" onclick="addToCart(${dish.id})">Add</button>` : `<div class="qty-controls"><button class="qty-btn" onclick="updateQty(${dish.id}, -1)">-</button><span>${qty}</span><button class="qty-btn" onclick="updateQty(${dish.id}, 1)">+</button></div>`;
-        return `<div class="new-menu-card"><div class="card-img-container"><img src="${dish.img}"><span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}</span>${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}</div><div class="card-body"><div class="meta-row"><span class="pill-category">${dish.category}</span><span class="pill-rating">4.7/5</span></div><h3>${dish.name}</h3><p class="card-stats">30 min / 328+ ratings</p><p class="card-desc">${dish.desc}</p><div class="discount-tag">10% off</div><div class="card-footer"><span class="card-price">₹${dish.price}</span><div>${actionHTML}</div></div></div></div>`;
+        return `<div class="new-menu-card" style="cursor: pointer;" onclick="openDishDetail(${dish.id})"><div class="card-img-container"><img src="${dish.img}"><span class="img-badge top-left ${dish.name.includes('Chicken') ? 'badge-non-veg' : 'badge-veg'}">${dish.name.includes('Chicken') ? 'Non-veg' : 'Veg'}</span>${dish.special ? `<span class="img-badge bottom-right badge-bestseller">${dish.special}</span>` : ''}</div><div class="card-body"><div class="meta-row"><span class="pill-category">${dish.category}</span><span class="pill-rating">4.7/5</span></div><h3>${dish.name}</h3><p class="card-stats">30 min / 328+ ratings</p><p class="card-desc">${dish.desc}</p><div class="discount-tag">10% off</div><div class="card-footer"><span class="card-price">₹${dish.price}</span><div onclick="event.stopPropagation()">${actionHTML}</div></div></div></div>`;
     }).join('');
 }
 
