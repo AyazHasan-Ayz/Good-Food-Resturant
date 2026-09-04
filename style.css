@@ -37,7 +37,7 @@ a { text-decoration: none; color: inherit; }
     left: 0; 
     width: 100%; 
     height: 100%; 
-    background-color: #fdfaf3; /* Matches the exact cream background of your image */
+    background-color: #fcf8f2; /* Matches the exact cream background of your image */
     display: flex; 
     align-items: center; 
     justify-content: center; 
