@@ -373,15 +373,20 @@ section, header, footer, .page-view { max-width: 100vw !important; box-sizing: b
     body.cart-active #toast-container { bottom: 155px; }
 }
 
-/* Complete Mobile Cart Fix */
-@media (max-width: 768px) {
-    .cart-overlay { 
-        z-index: 9998 !important; 
-    }
-    .cart-sidebar { 
-        z-index: 9999 !important; /* Bottom Nav ke bilkul upar layega */
-        height: 100dvh !important; /* Mobile address bar ka issue fix karega */
-        top: 0 !important;
-        padding-bottom: 0 !important; /* Pichli padding ko reset karega */
-    }
+/* Final Cart Bounce & Bottom Nav Fix */
+body:has(.cart-sidebar.open) .mobile-bottom-nav {
+    display: none !important; /* Cart khulne par bottom nav poori tarah hide ho jayega */
+}
+
+body:has(.cart-sidebar.open) {
+    overflow: hidden !important; /* Peeche ki screen ko scroll hone se rokega */
+}
+
+.cart-sidebar {
+    overscroll-behavior: none !important; /* Mobile ka khinchne wala bounce effect band karega */
+    background-color: #ffffff !important; 
+}
+
+.cart-footer {
+    background-color: #ffffff !important; /* Solid background taaki transparent na lage */
 }
