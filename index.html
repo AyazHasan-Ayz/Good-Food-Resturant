@@ -396,6 +396,38 @@
     <a href="https://wa.me/919876543210" target="_blank" class="floating-wa" title="Chat on WhatsApp">💬</a>
     <div class="floating-dice" onclick="openDiceModal()" title="Roll the dice for a random dish!">🎲</div>
 
+    <!-- YAHAN FIREBASE CODE PASTE KIYA HAI -->
+    <!-- FIREBASE DATABASE SETUP -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+      import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA_Rionq3vatjdc2AK6tIZCbxGj4A-xDh0",
+        authDomain: "good-food-resturant-40a5a.firebaseapp.com",
+        projectId: "good-food-resturant-40a5a",
+        storageBucket: "good-food-resturant-40a5a.firebasestorage.app",
+        messagingSenderId: "28899813673",
+        appId: "1:28899813673:web:6847ea52dfa27bdaed6f38"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // Yeh function script.js ko allow karega data bhejne ke liye
+      window.saveOrderToFirebase = async function(orderData) {
+          try {
+              const docRef = await addDoc(collection(db, "orders"), {
+                  ...orderData,
+                  timestamp: serverTimestamp()
+              });
+              return true;
+          } catch (e) {
+              console.error("Error saving order:", e);
+              return false;
+          }
+      };
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

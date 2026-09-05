@@ -372,13 +372,58 @@ function renderCheckout() {
     document.getElementById('chk-subtotal').innerText = `₹${subtotal}`; document.getElementById('chk-total').innerText = `₹${subtotal + DELIVERY_FEE}`;
 }
 
-function processCheckout(e) {
-    e.preventDefault(); if (cart.length === 0) return showToast("Your cart is empty! Please add some dishes.");
+async function processCheckout(e) {
+    e.preventDefault(); 
+    if (cart.length === 0) return showToast("Your cart is empty! Please add some dishes.");
+    
+    // Prepare order data
     const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0) + DELIVERY_FEE;
-    document.getElementById('s-id').innerText = 'GFR-' + Math.floor(100000 + Math.random() * 900000);
-    document.getElementById('s-name').innerText = document.getElementById('c-name').value;
+    const orderId = 'GFR-' + Math.floor(100000 + Math.random() * 900000);
+    const customerName = document.getElementById('c-name').value;
+    
+    const orderData = {
+        orderId: orderId,
+        customer: {
+            name: customerName,
+            phone: document.getElementById('c-phone').value,
+            email: document.getElementById('c-email').value,
+            address: document.getElementById('c-address').value,
+            pincode: document.getElementById('c-pin').value
+        },
+        items: cart, // Poora cart array save ho jayega
+        totalAmount: total,
+        deliveryMethod: document.querySelector('input[name="delivery"]:checked').value,
+        paymentMethod: document.querySelector('input[name="payment"]:checked').value,
+        status: "New Order"
+    };
+
+    // Show processing message
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.innerText = "Processing...";
+    submitBtn.disabled = true;
+
+    // Send to Firebase
+    if(window.saveOrderToFirebase) {
+        const success = await window.saveOrderToFirebase(orderData);
+        if(!success) {
+            submitBtn.innerText = "Place Order Now";
+            submitBtn.disabled = false;
+            return showToast("Network error. Please try again.");
+        }
+    }
+
+    // Success Screen Update
+    document.getElementById('s-id').innerText = orderId;
+    document.getElementById('s-name').innerText = customerName;
     document.getElementById('s-total').innerText = `₹${total}`;
-    cart = []; localStorage.removeItem('gfr_cart'); updateCartUI(); renderSpecialsNoSkeleton(); renderMenuNoSkeleton('All');
+    
+    // Clear Cart and Redirect
+    cart = []; localStorage.removeItem('gfr_cart'); updateCartUI(); 
+    renderSpecialsNoSkeleton(); renderMenuNoSkeleton('All');
+    
+    submitBtn.innerText = "Place Order Now";
+    submitBtn.disabled = false;
+    
     navigateTo('success-view'); window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
