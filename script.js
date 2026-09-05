@@ -326,17 +326,35 @@ function updateCartUI() {
     const cartCount = document.getElementById('cart-count'); if(cartCount) cartCount.innerText = totalQty;
     const bottomCartCount = document.getElementById('bottom-cart-count'); if(bottomCartCount) bottomCartCount.innerText = totalQty;
     
-    const cartItems = document.getElementById('cart-items'); if (!cartItems) return;
-    if (cart.length === 0) {
-        cartItems.innerHTML = `<div class="empty-cart-msg"><p>Your culinary cart is empty</p><br><button class="btn btn-primary" onclick="toggleCart(); navigateTo('home-view'); setTimeout(() => document.getElementById('menu-section').scrollIntoView({behavior: 'smooth'}), 100);">Explore Menu</button></div>`;
-        document.getElementById('cart-subtotal').innerText = `₹0`; document.getElementById('cart-total').innerText = `₹0`; return;
+    // Calculate total money
+    let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    
+    const cartItems = document.getElementById('cart-items'); 
+    if (cartItems) {
+        if (cart.length === 0) {
+            cartItems.innerHTML = `<div class="empty-cart-msg"><p>Your culinary cart is empty</p><br><button class="btn btn-primary" onclick="toggleCart(); navigateTo('home-view'); setTimeout(() => document.getElementById('menu-section').scrollIntoView({behavior: 'smooth'}), 100);">Explore Menu</button></div>`;
+            document.getElementById('cart-subtotal').innerText = `₹0`; document.getElementById('cart-total').innerText = `₹0`; 
+        } else {
+            cartItems.innerHTML = cart.map(item => {
+                return `<div class="cart-item"><img src="${item.img}" alt="${item.name}"><div class="cart-item-info"><h4>${item.name}</h4><p class="cart-item-price">₹${item.price} x ${item.qty}</p><div class="qty-controls" style="margin-top:6px; transform: scale(0.85); transform-origin: left;"><button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button><span>${item.qty}</span><button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button></div></div><button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button></div>`;
+            }).join('');
+            document.getElementById('cart-subtotal').innerText = `₹${subtotal}`; document.getElementById('cart-total').innerText = `₹${subtotal + DELIVERY_FEE}`;
+        }
     }
-    let subtotal = 0;
-    cartItems.innerHTML = cart.map(item => {
-        subtotal += item.price * item.qty;
-        return `<div class="cart-item"><img src="${item.img}" alt="${item.name}"><div class="cart-item-info"><h4>${item.name}</h4><p class="cart-item-price">₹${item.price} x ${item.qty}</p><div class="qty-controls" style="margin-top:6px; transform: scale(0.85); transform-origin: left;"><button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button><span>${item.qty}</span><button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button></div></div><button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button></div>`;
-    }).join('');
-    document.getElementById('cart-subtotal').innerText = `₹${subtotal}`; document.getElementById('cart-total').innerText = `₹${subtotal + DELIVERY_FEE}`;
+
+    // --- NEW: STICKY CART BAR LOGIC ---
+    const stickyBar = document.getElementById('sticky-cart-bar');
+    if(stickyBar) {
+        if(cart.length > 0) {
+            document.getElementById('sticky-cart-count').innerText = `${totalQty} ${totalQty > 1 ? 'items' : 'item'}`;
+            document.getElementById('sticky-cart-total').innerText = `₹${subtotal}`;
+            stickyBar.classList.add('show');
+            document.body.classList.add('cart-active'); // pushes floating buttons up
+        } else {
+            stickyBar.classList.remove('show');
+            document.body.classList.remove('cart-active');
+        }
+    }
 }
 
 // Checkout & Forms
