@@ -69,7 +69,16 @@ function navigateTo(viewId) {
 }
 
 function toggleMenu() { document.querySelector('.nav-links').classList.toggle('active'); }
-function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('open'); document.getElementById('cart-overlay').classList.toggle('show'); }
+function toggleCart() {
+    const sidebar = document.getElementById('cart-sidebar');
+    const overlay = document.getElementById('cart-overlay');
+    
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+    
+    // Cart open/close hone par UI update call karein taaki sticky bar hide/show ho sake
+    updateCartUI();
+}
 function goToCheckout() {
     if(cart.length === 0) return showToast("Your cart is empty. Please add items to order.");
     toggleCart(); navigateTo('checkout-view'); window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -343,13 +352,18 @@ function updateCartUI() {
     }
 
     // --- NEW: STICKY CART BAR LOGIC ---
+    // --- NEW: STICKY CART BAR LOGIC ---
     const stickyBar = document.getElementById('sticky-cart-bar');
+    const isCartOpen = document.getElementById('cart-sidebar').classList.contains('open');
+    const isCheckoutActive = document.getElementById('checkout-view').classList.contains('active');
+
     if(stickyBar) {
-        if(cart.length > 0) {
+        // Agar cart mein items hain, AND sidebar open NAHI hai, AND checkout page par NAHI hain
+        if(cart.length > 0 && !isCartOpen && !isCheckoutActive) {
             document.getElementById('sticky-cart-count').innerText = `${totalQty} ${totalQty > 1 ? 'items' : 'item'}`;
             document.getElementById('sticky-cart-total').innerText = `₹${subtotal}`;
             stickyBar.classList.add('show');
-            document.body.classList.add('cart-active'); // pushes floating buttons up
+            document.body.classList.add('cart-active'); 
         } else {
             stickyBar.classList.remove('show');
             document.body.classList.remove('cart-active');
