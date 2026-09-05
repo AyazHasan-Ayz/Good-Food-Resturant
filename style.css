@@ -373,13 +373,15 @@ section, header, footer, .page-view { max-width: 100vw !important; box-sizing: b
     body.cart-active #toast-container { bottom: 155px; }
 }
 
-/* Mobile Cart Checkout Button Fix */
+/* Complete Mobile Cart Fix */
 @media (max-width: 768px) {
-    .cart-sidebar {
-        height: 100%; /* Mobile screen size ke hisaab se height fix karega */
-        padding-bottom: 85px; /* Checkout button ko bottom nav ke upar shift karega */
+    .cart-overlay { 
+        z-index: 9998 !important; 
     }
-    .cart-footer {
-        padding: 1.2rem; /* Mobile par thodi jagah bachane ke liye */
+    .cart-sidebar { 
+        z-index: 9999 !important; /* Bottom Nav ke bilkul upar layega */
+        height: 100dvh !important; /* Mobile address bar ka issue fix karega */
+        top: 0 !important;
+        padding-bottom: 0 !important; /* Pichli padding ko reset karega */
     }
 }
